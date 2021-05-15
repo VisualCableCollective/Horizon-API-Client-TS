@@ -1,7 +1,7 @@
 name: Node.js Package
 
 on:
-  commit:
+  push:
   release:
     types: [created]
 

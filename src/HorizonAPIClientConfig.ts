@@ -26,7 +26,7 @@ export default class HorizonAPIClientConfig {
         if (customLocalServerUrl) {
           this.ServerUrl = customLocalServerUrl;
         } else {
-          this.ServerUrl = 'https://localhost:8000/';
+          this.ServerUrl = 'http://localhost:8000/api/';
         }
         break;
       default:
@@ -36,7 +36,7 @@ export default class HorizonAPIClientConfig {
   }
 }
 
-enum Environment {
+export enum Environment {
   /**
    * The API client is used in a production environment and will connect to the production services.
    */

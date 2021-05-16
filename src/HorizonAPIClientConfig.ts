@@ -1,3 +1,6 @@
+// Constants
+import { PRODUCTION_SERVER_URL } from './constants/endpoints';
+
 export default class HorizonAPIClientConfig {
   // Authentication
   BearerToken = '';
@@ -17,7 +20,7 @@ export default class HorizonAPIClientConfig {
         }
         break;
       default:
-        this.ServerUrl = 'https://api.horizon.vcc-online.eu/';
+        this.ServerUrl = PRODUCTION_SERVER_URL;
         break;
     }
   }

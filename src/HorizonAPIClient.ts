@@ -1,12 +1,12 @@
 import Config from './HorizonAPIClientConfig';
 
 export default class HorizonAPIClient {
-  testVal: String;
+  /**
+   * The config used by the API client.
+   */
+  readonly Config: Config;
 
-  config: Config = new Config();
-
-  constructor() {
-    console.log('hi');
-    this.testVal = 'Test';
+  constructor(config = new Config()) {
+    this.Config = config;
   }
 }

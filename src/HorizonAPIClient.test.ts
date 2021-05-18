@@ -1,11 +1,10 @@
-import APIClient from './HorizonAPIClient';
-import APIClientConfig, { Environment } from './HorizonAPIClientConfig';
+import { HorizonAPIClientConfig, HorizonAPIClient, Environment } from './HorizonAPIClient';
 
 require('dotenv').config();
 
 // Init
-const apiClientConfig = new APIClientConfig(Environment.LocalDevelopment);
-const apiClient = new APIClient(apiClientConfig);
+const apiClientConfig = new HorizonAPIClientConfig(Environment.LocalDevelopment);
+const apiClient = new HorizonAPIClient(apiClientConfig);
 
 // -------- AUTH TESTS --------
 test('user should not authenticate', async () => {

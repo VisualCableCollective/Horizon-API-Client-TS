@@ -1,12 +1,12 @@
 import fetch, { RequestInit, Response } from 'node-fetch';
+import { HorizonAPIClientConfig } from '../HorizonAPIClient';
 
 // Models
 import APIRoute from '../models/APIRoute';
 
-import HorizonAPIClientConfig from '../HorizonAPIClientConfig';
-
 export default class HTTPRequestUtil {
-  static async Request(route: APIRoute, clientConfig: HorizonAPIClientConfig, data: any = null) {
+  static async Request(route: APIRoute, clientConfig: HorizonAPIClientConfig,
+    data: any = null) {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       Accept: 'application/json',

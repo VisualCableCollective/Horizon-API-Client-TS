@@ -4,6 +4,7 @@
   "description": "Horizon API Client written in Typescript",
   "main": "index.js",
   "scripts": {
+    "build" : "tsc",
     "test": "jest"
   },
   "repository": {

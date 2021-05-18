@@ -2,7 +2,8 @@
   "name": "horizon-api-client-ts",
   "version": "1.0.0",
   "description": "Horizon API Client written in Typescript",
-  "main": "index.js",
+  "main": "lib/HorizonAPIClient.js",
+  "types": "lib/HorizonAPIClient.d.ts",
   "scripts": {
     "build" : "tsc",
     "test": "jest"

@@ -1,4 +1,3 @@
-import fetch, { RequestInit, Response } from 'node-fetch';
 import { HorizonAPIClientConfig } from '../HorizonAPIClient';
 
 // Models
@@ -7,6 +6,14 @@ import APIRoute from '../models/APIRoute';
 export default class HTTPRequestUtil {
   static async Request(route: APIRoute, clientConfig: HorizonAPIClientConfig,
     data: any = null) {
+    let actualFetch;
+    // @ts-ignore
+    if (window.fetch) {
+      actualFetch = fetch;
+    } else {
+      // eslint-disable-next-line global-require
+      actualFetch = require('node-fetch'); // Node Fetch
+    }
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -27,7 +34,7 @@ export default class HTTPRequestUtil {
 
     let response: Response;
     try {
-      response = await fetch(clientConfig.ServerUrl + route.route, options);
+      response = await actualFetch(clientConfig.ServerUrl + route.route, options);
       return response;
     } catch (ex) {
       console.error(ex);

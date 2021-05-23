@@ -52,7 +52,7 @@ namespace HorizonAPI {
       if (!response.ok) {
         return null;
       }
-      return new Team(response.json());
+      return new Team(await response.json());
     }
   }
 

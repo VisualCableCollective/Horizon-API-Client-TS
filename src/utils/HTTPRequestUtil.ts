@@ -1,11 +1,24 @@
 import { HorizonAPIClientConfig } from '../HorizonAPIClient';
 
+// Constants
+import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
+
 // Models
 import APIRoute from '../models/APIRoute';
 
 export default class HTTPRequestUtil {
   static async Request(route: APIRoute, clientConfig: HorizonAPIClientConfig,
     data: any = null) {
+    // checks
+    if (route.requiresID) {
+      if (!route.ID) {
+        console.error('Horizon API: canceled request because ID was missing');
+        return null;
+      }
+      // inject ID into the route
+      route.route.replace(ROUTE_ID_REPLACE_PLACEHOLDER, route.ID.toString());
+    }
+
     let actualFetch;
     // @ts-ignore
     if (window.fetch) {

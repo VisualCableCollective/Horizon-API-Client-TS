@@ -18,3 +18,9 @@ if (process.env.TEST_BEARER_TOKEN) {
     expect(result).toBe(true);
   });
 }
+
+// -------- TEAM TESTS --------
+test('VCC team should be found', async () => {
+  const result = await apiClient.getTeam(1);
+  expect(result?.id).toBe(1);
+});

@@ -9,6 +9,8 @@ import APIRoute from '../models/APIRoute';
 export default class HTTPRequestUtil {
   static async Request(route: APIRoute, clientConfig: HorizonAPIClientConfig,
     data: any = null) {
+    const routeCopy = route;
+
     // checks
     if (route.requiresID) {
       if (!route.ID) {
@@ -16,7 +18,7 @@ export default class HTTPRequestUtil {
         return null;
       }
       // inject ID into the route
-      route.route.replace(ROUTE_ID_REPLACE_PLACEHOLDER, route.ID.toString());
+      routeCopy.route = route.route.replace(ROUTE_ID_REPLACE_PLACEHOLDER, route.ID.toString());
     }
 
     let actualFetch;
@@ -47,7 +49,7 @@ export default class HTTPRequestUtil {
 
     let response: Response;
     try {
-      response = await actualFetch(clientConfig.ServerUrl + route.route, options);
+      response = await actualFetch(clientConfig.ServerUrl + routeCopy.route, options);
       return response;
     } catch (ex) {
       console.error(ex);

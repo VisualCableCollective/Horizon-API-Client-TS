@@ -3,8 +3,11 @@
 import HTTPRequestUtil from './utils/HTTPRequestUtil';
 
 // Constants
-import { GET_SELF_USER_DATA_ROUTE } from './constants/routes';
+import { GET_SELF_USER_DATA_ROUTE, GET_TEAM_ROUTE } from './constants/routes';
 import { PRODUCTION_SERVER_URL } from './constants/endpoints';
+
+// Models
+import Team from './models/Team';
 
 namespace HorizonAPI {
   export class HorizonAPIClient {
@@ -32,6 +35,24 @@ namespace HorizonAPI {
         return false;
       }
       return true;
+    }
+
+    /**
+     * Tries to find a team for the given ID.
+     * @param id the ID of the team
+     * @returns a Team model
+     */
+    async getTeam(id: number | string) {
+      const getTeamRouteCopy = GET_TEAM_ROUTE;
+      getTeamRouteCopy.ID = id;
+      const response = await HTTPRequestUtil.Request(getTeamRouteCopy, this.Config);
+      if (response === null) {
+        return null;
+      }
+      if (!response.ok) {
+        return null;
+      }
+      return new Team(response.json());
     }
   }
 

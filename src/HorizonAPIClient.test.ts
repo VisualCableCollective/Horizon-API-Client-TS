@@ -1,5 +1,4 @@
-import { HorizonAPIClientConfig, HorizonAPIClient, Environment } from './HorizonAPIClient';
-import Team from './models/Team';
+import { HorizonAPIClientConfig, HorizonAPIClient, Environment, Team } from './HorizonAPIClient';
 
 require('dotenv').config();
 
@@ -8,33 +7,39 @@ const apiClientConfig = new HorizonAPIClientConfig(Environment.LocalDevelopment)
 HorizonAPIClient.Config = apiClientConfig;
 
 // -------- AUTH TESTS --------
-test('user should not authenticate', async () => {
+test('user should not authenticate', async (done) => {
   const result = await HorizonAPIClient.authenticateUserWithToken('definitely_not_working_token');
   expect(result).toBe(false);
+  done();
 });
 
 if (process.env.TEST_BEARER_TOKEN) {
-  test('user should authenticate', async () => {
+  test('user should authenticate', async (done) => {
     const result = await HorizonAPIClient.authenticateUserWithToken(process.env.TEST_BEARER_TOKEN || '');
     expect(result).toBe(true);
+    done();
   });
 }
 
 // -------- TEAM TESTS --------
-let team: Team | null = null;
-test('VCC team should be found', async () => {
-  team = await HorizonAPIClient.getTeam(1);
-  expect(team?.id).toBe(1);
+let team: Team;
+test('VCC team should be found', async (done) => {
+  const responseteam = await HorizonAPIClient.getTeam(1);
+  expect(responseteam).toBeDefined();
+  expect(responseteam?.id).toBe(1);
+  if (responseteam !== null) {
+    team = responseteam;
+  }
+  done();
 });
 
-if (team !== null) {
-  test('VCC team should have products', async () => {
-    const result = await team?.getProducts();
-    expect(result).toBeDefined();
-    expect(result?.length).toBeGreaterThan(0);
-    if (result) {
-      console.log(result[0].name);
-      expect(result[0].id).toBeDefined();
-    }
-  });
-}
+test('VCC team should have products', async (done) => {
+  const result = await team?.getProducts();
+  expect(result).toBeDefined();
+  expect(result?.length).toBeGreaterThan(0);
+  if (result) {
+    console.log(result[0].name);
+    expect(result[0].id).toBeDefined();
+  }
+  done();
+});

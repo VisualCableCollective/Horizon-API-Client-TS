@@ -3,6 +3,8 @@ export default interface APIRoute {
   method: RequestMethod,
   requiresAuth: boolean,
   requiresID: boolean,
+  requiresParentRoute: boolean,
+  parentRoute?: APIRoute,
   ID?: string | number,
 }
 

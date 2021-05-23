@@ -1,4 +1,5 @@
 import { HorizonAPIClientConfig, HorizonAPIClient, Environment } from './HorizonAPIClient';
+import Team from './models/Team';
 
 require('dotenv').config();
 
@@ -20,7 +21,20 @@ if (process.env.TEST_BEARER_TOKEN) {
 }
 
 // -------- TEAM TESTS --------
+let team: Team | null = null;
 test('VCC team should be found', async () => {
-  const result = await apiClient.getTeam(1);
-  expect(result?.id).toBe(1);
+  team = await apiClient.getTeam(1);
+  expect(team?.id).toBe(1);
 });
+
+if (team !== null) {
+  test('VCC team should have products', async () => {
+    const result = await team?.getProducts();
+    expect(result).toBeDefined();
+    expect(result?.length).toBeGreaterThan(0);
+    if (result) {
+      console.log(result[0].name);
+      expect(result[0].id).toBeDefined();
+    }
+  });
+}

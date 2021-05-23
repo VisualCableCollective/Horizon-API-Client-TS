@@ -1,6 +1,5 @@
 // Constants
 import { GET_TEAM_ROUTE, GET_PRODUCTS_OF_TEAM_ROUTE } from '../constants/routes';
-import HorizonAPI from '../HorizonAPIClient';
 
 // Utils
 import HTTPRequestUtil from '../utils/HTTPRequestUtil';

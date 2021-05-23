@@ -1,8 +1,5 @@
-// Utils
-// eslint-disable-next-line max-classes-per-file
-import HTTPRequestUtil from './utils/HTTPRequestUtil';
-
 // Constants
+// eslint-disable-next-line max-classes-per-file
 import { GET_SELF_USER_DATA_ROUTE, GET_TEAM_ROUTE } from './constants/routes';
 import { PRODUCTION_SERVER_URL } from './constants/endpoints';
 
@@ -14,20 +11,16 @@ namespace HorizonAPI {
     /**
      * The config used by the API client.
      */
-    readonly Config: HorizonAPIClientConfig;
-
-    constructor(config = new HorizonAPIClientConfig()) {
-      this.Config = config;
-    }
+    static Config = new HorizonAPIClientConfig();
 
     /**
      * Authenticates a user with the given token.
      * @param token Bearer token to authenticate a user
      * @returns true if the user has been authenticated successfully
      */
-    async authenticateUserWithToken(token: string) {
-      this.Config.BearerToken = token;
-      const response = await HTTPRequestUtil.Request(GET_SELF_USER_DATA_ROUTE, this.Config);
+    static async authenticateUserWithToken(token: string) {
+      HorizonAPIClient.Config.BearerToken = token;
+      const response = await HTTPRequestUtil.Request(GET_SELF_USER_DATA_ROUTE);
       if (response === null) {
         return false;
       }
@@ -42,10 +35,10 @@ namespace HorizonAPI {
      * @param id the ID of the team
      * @returns a Team model
      */
-    async getTeam(id: number | string) {
+    static async getTeam(id: number | string) {
       const getTeamRouteCopy = GET_TEAM_ROUTE;
       getTeamRouteCopy.ID = id;
-      const response = await HTTPRequestUtil.Request(getTeamRouteCopy, this.Config);
+      const response = await HTTPRequestUtil.Request(getTeamRouteCopy);
       if (response === null) {
         return null;
       }

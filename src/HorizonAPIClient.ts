@@ -25,6 +25,14 @@ namespace HorizonAPI {
         routeCopy.route = route.route.replace(ROUTE_ID_REPLACE_PLACEHOLDER, route.ID.toString());
       }
 
+      if (route.requiresParentRoute) {
+        if (route.parentRoute === undefined) {
+          console.error('Horizon API: canceled request because parent route was missing');
+          return null;
+        }
+        routeCopy.route = route.parentRoute.route + route.route;
+      }
+
       let actualFetch;
       // @ts-ignore
       if (window.fetch) {

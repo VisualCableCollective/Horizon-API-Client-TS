@@ -1,5 +1,6 @@
 import { Environment } from './enums/Environment';
-import { HorizonAPIClientConfig, HorizonAPIClient, Team } from './index';
+import { Team } from './models/Team';
+import { HorizonAPIClientConfig, HorizonAPIClient } from './index';
 
 require('dotenv').config();
 

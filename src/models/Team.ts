@@ -1,6 +1,6 @@
-import { HorizonAPIClient } from '..';
+/* import { HorizonAPIClient } from '..';
 import { GET_PRODUCTS_OF_TEAM_ROUTE, GET_TEAM_ROUTE } from '../constants/routes';
-import Product from './Product';
+import Product from './Product'; */
 
 export default class Team {
   id: number;
@@ -19,7 +19,7 @@ export default class Team {
     this.updatedAt = new Date(apiTeamResponse.updated_at);
   }
 
-  async getProducts() {
+  /* async getProducts() {
     const parentRoute = GET_TEAM_ROUTE;
     parentRoute.ID = this.id;
 
@@ -40,5 +40,5 @@ export default class Team {
     });
 
     return productsArray;
-  }
+  } */
 }

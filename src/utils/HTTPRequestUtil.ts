@@ -1,9 +1,16 @@
 /* eslint-disable import/prefer-default-export */
-import { HorizonAPIClient, LOG_PREFIX } from '..';
+import { LOG_PREFIX } from '../HorizonAPIClient';
 import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
 import APIRoute from '../models/APIRoute';
+import { HorizonAPIClientConfig } from '..';
 
 export class HTTPRequestUtil {
+  Config: HorizonAPIClientConfig;
+
+  constructor(config: HorizonAPIClientConfig) {
+    this.Config = config;
+  }
+
   private defaultHeaders = new Headers({
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -35,7 +42,7 @@ export class HTTPRequestUtil {
 
     let actualFetch;
     // @ts-ignore
-    if (window.fetch) {
+    if (window && window.fetch) {
       actualFetch = fetch;
     } else {
       // eslint-disable-next-line import/no-extraneous-dependencies, global-require
@@ -44,12 +51,12 @@ export class HTTPRequestUtil {
 
     const headers = this.defaultHeaders;
 
-    if (HorizonAPIClient.Config.BearerToken !== '') {
-      headers.append('Authorization', `Bearer ${HorizonAPIClient.Config.BearerToken}`);
+    if (this.Config.BearerToken !== '') {
+      headers.append('Authorization', `Bearer ${this.Config.BearerToken}`);
     }
 
     const options: RequestInit = {
-      method: 'GET',
+      method: route.method.toString(),
       headers,
     };
 
@@ -59,7 +66,7 @@ export class HTTPRequestUtil {
 
     let response: Response;
     try {
-      response = await actualFetch(HorizonAPIClient.Config.ServerUrl + routeCopy.route, options);
+      response = await actualFetch(this.Config.ServerUrl + routeCopy.route, options);
       return response;
     } catch (ex) {
       console.error(ex);

@@ -12,17 +12,23 @@ dotenv.config();
 jest.setTimeout(10000);
 
 // Init
-const apiClientConfig = new HorizonAPIClientConfig(0, '', Environment.LocalDevelopment);
+const apiClientConfig = new HorizonAPIClientConfig(2, 'ZmWrSAT1TURrY8skR5OjRngbYomoHyzTYG7wQYa5', Environment.LocalDevelopment);
 const apiClient = new HorizonAPIClient(apiClientConfig);
 
 // -------- AUTH TESTS --------
-test('user should not authenticate', async (done) => {
+/* test('user should not authenticate', async (done) => {
   const result = await apiClient.authenticateUserWithToken('definitely_not_working_token');
   expect(result).toBe(false);
   done();
+}); */
+
+test('user should authenticate with credentials', async (done) => {
+  const result = await apiClient.authenticateUserWithCredentials('joschua.hass.sh@gmail.com', 'Joschua#25770Per');
+  expect(result).toBe(true);
+  done();
 });
 
-if (process.env.TEST_BEARER_TOKEN) {
+/* if (process.env.TEST_BEARER_TOKEN) {
   test('user should authenticate', async (done) => {
     const result = await apiClient.authenticateUserWithToken(process.env.TEST_BEARER_TOKEN || '');
     expect(result).toBe(true);

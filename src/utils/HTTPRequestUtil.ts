@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { LOG_PREFIX } from '../HorizonAPIClient';
 import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
-import APIRoute from '../models/APIRoute';
+import APIRoute, { RequestMethod } from '../models/APIRoute';
 import { HorizonAPIClientConfig } from '..';
 
 export class HTTPRequestUtil {
@@ -17,7 +17,7 @@ export class HTTPRequestUtil {
     Connection: 'keep-alive',
   });
 
-  async Request(route: APIRoute, data: any = null) {
+  async Request(route: APIRoute, data: any = null, debug = false) {
     const routeCopy = route;
 
     // checks
@@ -40,23 +40,20 @@ export class HTTPRequestUtil {
       routeCopy.route = route.parentRoute.route + route.route;
     }
 
-    let actualFetch;
     // @ts-ignore
-    if (window && window.fetch) {
-      actualFetch = fetch;
-    } else {
+    if (!window && !window.fetch) {
       // eslint-disable-next-line import/no-extraneous-dependencies, global-require
-      actualFetch = require('node-fetch');
+      globalThis.fetch = require('node-fetch');
     }
 
     const headers = this.defaultHeaders;
 
     if (this.Config.BearerToken !== '') {
-      headers.append('Authorization', `Bearer ${this.Config.BearerToken}`);
+      headers.set('Authorization', `Bearer ${this.Config.BearerToken}`);
     }
 
     const options: RequestInit = {
-      method: route.method.toString(),
+      method: RequestMethod[route.method],
       headers,
     };
 
@@ -64,12 +61,17 @@ export class HTTPRequestUtil {
       options.body = JSON.stringify(data);
     }
 
+    if (debug) {
+      console.log(`Sending request to: ${this.Config.ServerUrl}${routeCopy.route}`);
+      console.log(`Options: ${JSON.stringify(options)}`);
+    }
+
     let response: Response;
     try {
-      response = await actualFetch(this.Config.ServerUrl + routeCopy.route, options);
+      response = await fetch(this.Config.ServerUrl + routeCopy.route, options);
       return response;
     } catch (ex) {
-      console.error(ex);
+      console.error(`Error (url: ${this.Config.ServerUrl}${routeCopy.route}) ${ex}`);
       return null;
     }
   }

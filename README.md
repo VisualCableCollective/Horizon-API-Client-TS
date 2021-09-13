@@ -1,2 +1,11 @@
-# Horizon-API-Client-TS
-Horizon API Client written in Typescript
+# horizon-api-client
+
+> API wrapper for the Horizon store
+
+## Install
+
+ToDo
+
+## Usage
+
+ToDo

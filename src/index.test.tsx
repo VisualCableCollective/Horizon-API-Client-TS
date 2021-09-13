@@ -1,8 +1,15 @@
-import { Environment } from './enums/Environment';
-import { Team } from './models/Team';
-import { HorizonAPIClientConfig, HorizonAPIClient } from './index';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+import { Environment } from './enums/Environment';
+import Team from './models/Team';
+import { HorizonAPIClient } from './index';
+import HorizonAPIClientConfig from './Config';
+
+dotenv.config();
+
+// Config
+jest.setTimeout(10000);
 
 // Init
 const apiClientConfig = new HorizonAPIClientConfig(Environment.LocalDevelopment);
@@ -21,6 +28,8 @@ if (process.env.TEST_BEARER_TOKEN) {
     expect(result).toBe(true);
     done();
   });
+} else {
+  console.warn('Skipped test for correct user authentication!');
 }
 
 // -------- TEAM TESTS --------

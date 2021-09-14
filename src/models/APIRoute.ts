@@ -6,6 +6,7 @@ export default interface APIRoute {
   requiresParentRoute: boolean,
   parentRoute?: APIRoute,
   ID?: string | number,
+  disableApiUrlPrefix: boolean,
 }
 
 export enum RequestMethod {

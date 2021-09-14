@@ -1,31 +1,37 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import dotenv from 'dotenv';
-
-import { Environment } from './enums/Environment';
 // import Team from './models/Team';
-import { HorizonAPIClient } from './index';
-import { HorizonAPIClientConfig } from './HorizonAPIClientConfig';
+import {
+  HorizonAPIClient, HorizonAPIClientConfig, Environment, LoginStatus,
+} from './index';
 
 dotenv.config();
 
 // Config
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 // Init
 const apiClientConfig = new HorizonAPIClientConfig(2, 'ZmWrSAT1TURrY8skR5OjRngbYomoHyzTYG7wQYa5', Environment.LocalDevelopment);
 const apiClient = new HorizonAPIClient(apiClientConfig);
 
 // -------- AUTH TESTS --------
-/* test('user should not authenticate', async (done) => {
-  const result = await apiClient.authenticateUserWithToken('definitely_not_working_token');
-  expect(result).toBe(false);
-  done();
-}); */
+describe('User Authentication', () => {
+  test('user should not authenticate with credentials', async (done) => {
+    const result = await apiClient.authenticateUserWithCredentials('definitely_not_working', 'definitely_not_working');
+    expect(result.status).toBe(LoginStatus.CredentialsInvalid);
+    done();
+  });
 
-test('user should authenticate with credentials', async (done) => {
-  const result = await apiClient.authenticateUserWithCredentials('joschua.hass.sh@gmail.com', 'Joschua#25770Per');
-  expect(result).toBe(true);
-  done();
+  if (process.env.TEST_USER_EMAIL && process.env.TEST_USER_PASSWORD) {
+    test('user should authenticate with credentials', async (done) => {
+      const result = await apiClient.authenticateUserWithCredentials(process.env.TEST_USER_EMAIL || '', process.env.TEST_USER_PASSWORD || '');
+      expect(result.status).toBe(LoginStatus.Success);
+      expect(result.tokenData?.access_token).toBeTruthy();
+      done();
+    });
+  } else {
+    console.warn('Skipped test for authentication with credentials: TEST_USER_EMAIL and/or TEST_USER_PASSWORD aren\'t set in the .env');
+  }
 });
 
 /* if (process.env.TEST_BEARER_TOKEN) {

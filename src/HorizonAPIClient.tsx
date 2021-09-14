@@ -1,6 +1,9 @@
 // Constants
 import { HorizonAPIClientConfig } from '.';
 import { GET_SELF_USER_DATA_ROUTE, GET_TEAM_ROUTE, USER_CREDENTIALS_LOGIN_ROUTE } from './constants/routes';
+import { HTTPStatusCode } from './enums/HTTPStatusCode';
+import { LoginStatus } from './enums/LoginStatus';
+import { TokenResponse } from './models/responses/TokenResponse';
 
 // Models
 import Team from './models/Team';
@@ -57,14 +60,16 @@ export class HorizonAPIClient {
     });
 
     if (response === null) {
-      return false;
+      return { status: LoginStatus.UnknownError };
     }
 
-    if (!response.ok) {
-      return false;
+    if (response.status === HTTPStatusCode.BadRequest) {
+      return { status: LoginStatus.CredentialsInvalid };
     }
 
-    return true;
+    const tokenData = new TokenResponse(await response.json());
+
+    return { status: LoginStatus.Success, tokenData };
   }
 
   /**

@@ -17,7 +17,7 @@ export class HTTPRequestUtil {
     Connection: 'keep-alive',
   });
 
-  async Request(route: APIRoute, data: any = null, debug = false) {
+  async Request(route: APIRoute, data: any = null) {
     const routeCopy = route;
 
     // checks
@@ -61,9 +61,9 @@ export class HTTPRequestUtil {
       options.body = JSON.stringify(data);
     }
 
-    if (debug) {
-      console.log(`Sending request to: ${this.Config.ServerUrl}${routeCopy.route}`);
-      console.log(`Options: ${JSON.stringify(options)}`);
+    if (this.Config.Debug) {
+      console.log(`[RequestUtil] Sending request to ${this.Config.ServerUrl}${routeCopy.route}`);
+      console.log(`[RequestUtil] Data: ${JSON.stringify(options)}}`);
     }
 
     let response: Response;

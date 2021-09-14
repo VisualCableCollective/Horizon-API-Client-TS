@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-import { LOG_PREFIX } from '../HorizonAPIClient';
 import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
 import APIRoute, { RequestMethod } from '../models/APIRoute';
 import { HorizonAPIClientConfig } from '..';
@@ -23,7 +22,7 @@ export class HTTPRequestUtil {
     // checks
     if (route.requiresID) {
       if (!route.ID) {
-        console.error(`${LOG_PREFIX}Canceled request because ID was missing`);
+        console.error(`${this.Config.LogPrefix}Canceled request because ID was missing`);
         return null;
       }
 
@@ -33,7 +32,7 @@ export class HTTPRequestUtil {
 
     if (route.requiresParentRoute) {
       if (route.parentRoute === undefined) {
-        console.error(`${LOG_PREFIX}Canceled request because parent route was missing`);
+        console.error(`${this.Config.LogPrefix}Canceled request because parent route was missing`);
         return null;
       }
 

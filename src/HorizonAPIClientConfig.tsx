@@ -23,6 +23,8 @@ export class HorizonAPIClientConfig {
 
   Debug: boolean = false;
 
+  LogPrefix = '[Horizon API] ';
+
   constructor(
     oAuthClientId: number,
     oAuthClientSecret: string,

@@ -1,6 +1,7 @@
 // Constants
 import { HorizonAPIClientConfig } from '.';
 import { GET_SELF_USER_DATA_ROUTE, GET_TEAM_ROUTE, USER_CREDENTIALS_LOGIN_ROUTE } from './constants/routes';
+
 // Models
 import Team from './models/Team';
 import { HTTPRequestUtil } from './utils/HTTPRequestUtil';
@@ -55,7 +56,15 @@ export class HorizonAPIClient {
       scope: '*',
     });
 
-    return response;
+    if (response === null) {
+      return false;
+    }
+
+    if (!response.ok) {
+      return false;
+    }
+
+    return true;
   }
 
   /**

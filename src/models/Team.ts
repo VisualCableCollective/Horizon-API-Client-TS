@@ -1,6 +1,4 @@
-/* import { HorizonAPIClient } from '..';
-import { GET_PRODUCTS_OF_TEAM_ROUTE, GET_TEAM_ROUTE } from '../constants/routes';
-import Product from './Product'; */
+import Product from './Product';
 
 export default class Team {
   id: number;
@@ -11,12 +9,20 @@ export default class Team {
 
   updatedAt: Date;
 
+  products: Product[] = [];
+
   constructor(apiTeamResponse: any) {
     this.id = apiTeamResponse.id;
     this.name = apiTeamResponse.name;
 
     this.createdAt = new Date(apiTeamResponse.created_at);
     this.updatedAt = new Date(apiTeamResponse.updated_at);
+
+    if (apiTeamResponse.products) {
+      apiTeamResponse.products.forEach((productData: any) => {
+        this.products.push(new Product(productData));
+      });
+    }
   }
 
   /* async getProducts() {

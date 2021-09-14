@@ -56,21 +56,36 @@ export class HTTPRequestUtil {
       headers,
     };
 
+    let params = '';
+
     if (data !== null) {
-      options.body = JSON.stringify(data);
+      if (route.method === RequestMethod.GET) {
+        params = '?';
+        Object.keys(data).forEach((key) => {
+          params += `${key}=${decodeURI(data[key])}`;
+        });
+      } else {
+        options.body = JSON.stringify(data);
+      }
+    }
+
+    let serverUrl = this.Config.ServerUrl;
+
+    if (route.disableApiUrlPrefix) {
+      serverUrl = serverUrl.replace('api/', '');
     }
 
     if (this.Config.Debug) {
-      console.log(`[RequestUtil] Sending request to ${this.Config.ServerUrl}${routeCopy.route}`);
+      console.log(`[RequestUtil] Sending request to ${serverUrl + routeCopy.route + params}`);
       console.log(`[RequestUtil] Data: ${JSON.stringify(options)}}`);
     }
 
     let response: Response;
     try {
-      response = await fetch(this.Config.ServerUrl + routeCopy.route, options);
+      response = await fetch(serverUrl + routeCopy.route + params, options);
       return response;
     } catch (ex) {
-      console.error(`Error (url: ${this.Config.ServerUrl}${routeCopy.route}) ${ex}`);
+      console.error(`Error (url: ${serverUrl + routeCopy.route + params}) ${ex}`);
       return null;
     }
   }

@@ -42,7 +42,7 @@ export class HorizonAPIClientConfig {
         if (customLocalServerUrl) {
           this.ServerUrl = customLocalServerUrl;
         } else {
-          this.ServerUrl = 'http://localhost:8000/';
+          this.ServerUrl = 'http://localhost:8000/api/';
         }
         break;
 

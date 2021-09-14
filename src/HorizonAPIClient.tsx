@@ -77,20 +77,23 @@ export class HorizonAPIClient {
    * @param id the ID of the team
    * @returns a Team model
    */
-  async getTeam(id: number | string) {
+  async getTeam(id: number, withProducts = false) {
     const getTeamRouteCopy = GET_TEAM_ROUTE;
     getTeamRouteCopy.ID = id;
 
-    const response = await this.RequestService.Request(getTeamRouteCopy);
-
-    if (response === null) {
-      return null;
+    let withRelationships = '';
+    if (withProducts) {
+      withRelationships += 'products,';
     }
 
-    if (!response.ok) {
-      return null;
+    const response = await this.RequestService.Request(getTeamRouteCopy, {
+      with: withRelationships,
+    });
+
+    if (response === null || response.status !== HTTPStatusCode.OK) {
+      return { success: false };
     }
 
-    return new Team(await response.json());
+    return { success: true, data: new Team(await response.json()) };
   }
 }

@@ -34,6 +34,23 @@ describe('User Authentication', () => {
   }
 });
 
+describe('Store', () => {
+  describe('Teams', () => {
+    test('VCC team should be found', async (done) => {
+      const response = await apiClient.getTeam(1, true);
+      expect(response.success).toBeTruthy();
+      done();
+    });
+
+    test('VCC team should be found with products', async (done) => {
+      const response = await apiClient.getTeam(1, true);
+      expect(response.success).toBeTruthy();
+      expect(response.data?.products.length).toBeGreaterThanOrEqual(1);
+      done();
+    });
+  });
+});
+
 /* if (process.env.TEST_BEARER_TOKEN) {
   test('user should authenticate', async (done) => {
     const result = await apiClient.authenticateUserWithToken(process.env.TEST_BEARER_TOKEN || '');

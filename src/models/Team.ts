@@ -1,6 +1,6 @@
-import Product from './Product';
+import { Product } from './Product';
 
-export default class Team {
+export class Team {
   id: number;
 
   name: string;

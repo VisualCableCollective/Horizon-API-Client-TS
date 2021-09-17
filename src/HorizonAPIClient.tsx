@@ -6,7 +6,7 @@ import { LoginStatus } from './enums/LoginStatus';
 import { TokenResponse } from './models/responses/TokenResponse';
 
 // Models
-import Team from './models/Team';
+import { Team } from './models/Team';
 import { HTTPRequestUtil } from './utils/HTTPRequestUtil';
 
 export const LOG_PREFIX = '[Horizon API] ';

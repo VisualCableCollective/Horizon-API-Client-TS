@@ -1,4 +1,4 @@
-import nodeFetch, { RequestInit, Headers, Response } from 'node-fetch';
+/* eslint-disable import/prefer-default-export */
 import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
 import APIRoute, { RequestMethod } from '../models/APIRoute';
 import { HorizonAPIClientConfig } from '..';
@@ -39,13 +39,10 @@ export class HTTPRequestUtil {
       routeCopy.route = route.parentRoute.route + route.route;
     }
 
-    let fetchUsed;
-
     // @ts-ignore
     if (!window && !window.fetch) {
-      fetchUsed = nodeFetch;
-    } else {
-      fetchUsed = globalThis.fetch;
+      // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+      globalThis.fetch = require('node-fetch');
     }
 
     const headers = this.defaultHeaders;
@@ -85,8 +82,7 @@ export class HTTPRequestUtil {
 
     let response: Response;
     try {
-      // @ts-ignore
-      response = await fetchUsed(serverUrl + routeCopy.route + params, options);
+      response = await fetch(serverUrl + routeCopy.route + params, options);
       return response;
     } catch (ex) {
       console.error(`Error (url: ${serverUrl + routeCopy.route + params}) ${ex}`);

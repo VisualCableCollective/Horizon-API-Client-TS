@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { ROUTE_ID_REPLACE_PLACEHOLDER } from '../constants/routes';
 import APIRoute, { RequestMethod } from '../models/APIRoute';
 import { HorizonAPIClientConfig } from '..';
@@ -37,12 +36,6 @@ export class HTTPRequestUtil {
       }
 
       routeCopy.route = route.parentRoute.route + route.route;
-    }
-
-    // @ts-ignore
-    if (!window && !window.fetch) {
-      // eslint-disable-next-line import/no-extraneous-dependencies, global-require
-      globalThis.fetch = require('node-fetch');
     }
 
     const headers = this.defaultHeaders;

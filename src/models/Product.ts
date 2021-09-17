@@ -1,3 +1,5 @@
+import { Team } from '..';
+
 export class Product {
   id: number;
 
@@ -10,6 +12,8 @@ export class Product {
   creatorId: number;
 
   creatorType: string;
+
+  creator?: Team;
 
   constructor(apiProductResponse: any) {
     this.id = apiProductResponse.id;

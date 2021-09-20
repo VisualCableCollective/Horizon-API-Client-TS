@@ -34,7 +34,6 @@ describe('User Authentication', () => {
     test('user data should be obtained', async (done) => {
       const result = await apiClient.getAuthenticatedUser(true);
       expect(result.success).toBeTruthy();
-      console.log(JSON.stringify(result));
       done();
     });
   } else {

@@ -4,6 +4,7 @@ import { GET_SELF_USER_DATA_ROUTE, GET_TEAM_ROUTE, USER_CREDENTIALS_LOGIN_ROUTE 
 import { HTTPStatusCode } from './enums/HTTPStatusCode';
 import { LoginStatus } from './enums/LoginStatus';
 import { TokenResponse } from './models/responses/TokenResponse';
+import { SelfUser } from './models/SelfUser';
 
 // Models
 import { Team } from './models/Team';
@@ -70,6 +71,23 @@ export class HorizonAPIClient {
     const tokenData = new TokenResponse(await response.json());
 
     return { status: LoginStatus.Success, tokenData };
+  }
+
+  async getAuthenticatedUser(withTeams = false) {
+    let withRelationships = '';
+    if (withTeams) {
+      withRelationships += 'teams,';
+    }
+
+    const response = await this.RequestService.Request(GET_SELF_USER_DATA_ROUTE, {
+      with: withRelationships,
+    });
+
+    if (response === null || response.status !== HTTPStatusCode.OK) {
+      return { success: false };
+    }
+
+    return { success: true, data: new SelfUser(await response.json()) };
   }
 
   /**

@@ -27,6 +27,14 @@ describe('User Authentication', () => {
       const result = await apiClient.authenticateUserWithCredentials(process.env.TEST_USER_EMAIL || '', process.env.TEST_USER_PASSWORD || '');
       expect(result.status).toBe(LoginStatus.Success);
       expect(result.tokenData?.access_token).toBeTruthy();
+      apiClient.Config.BearerToken = result.tokenData?.access_token || '';
+      done();
+    });
+
+    test('user data should be obtained', async (done) => {
+      const result = await apiClient.getAuthenticatedUser(true);
+      expect(result.success).toBeTruthy();
+      console.log(JSON.stringify(result));
       done();
     });
   } else {

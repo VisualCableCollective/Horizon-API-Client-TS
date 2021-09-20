@@ -14,9 +14,11 @@
   "scripts": {
     "build": "tsdx build",
     "test": "run-s test:unit",
-    "patch": "run-s build && npm version patch",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom"
+    "test:watch": "react-scripts test --env=jsdom",
+    "preversion": "npm test",
+    "version": "npm run build && git add -A dist",
+    "postversion": "git push && git push --tags"
   },
   "peerDependencies": {
     "react": "^16.0.0"

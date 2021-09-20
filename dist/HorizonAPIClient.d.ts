@@ -1,6 +1,7 @@
 import { HorizonAPIClientConfig } from '.';
 import { LoginStatus } from './enums/LoginStatus';
 import { TokenResponse } from './models/responses/TokenResponse';
+import { SelfUser } from './models/SelfUser';
 import { Team } from './models/Team';
 import { HTTPRequestUtil } from './utils/HTTPRequestUtil';
 export declare const LOG_PREFIX = "[Horizon API] ";
@@ -28,6 +29,13 @@ export declare class HorizonAPIClient {
     } | {
         status: LoginStatus;
         tokenData: TokenResponse;
+    }>;
+    getAuthenticatedUser(withTeams?: boolean): Promise<{
+        success: boolean;
+        data?: undefined;
+    } | {
+        success: boolean;
+        data: SelfUser;
     }>;
     /**
      * Tries to find a team for the given ID.

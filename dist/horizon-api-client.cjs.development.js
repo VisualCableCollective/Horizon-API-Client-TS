@@ -854,6 +854,61 @@ var TokenResponse = function TokenResponse(jsonData) {
   this.refresh_token = jsonData.refresh_token;
 };
 
+/* eslint-disable import/prefer-default-export */
+var PRODUCTION_SERVER_URL = 'https://api.horizon.vcc-online.eu/api/';
+
+/* eslint-disable import/prefer-default-export */
+
+(function (Environment) {
+  /**
+     * The API client is used in a production environment and will connect to the production
+     * services.
+     */
+  Environment[Environment["Production"] = 0] = "Production";
+  /**
+     * The API client is used in a local development environment and will only connect to the local server specified in the constructor or to the default 'https://localhost:8000/' server.
+     */
+
+  Environment[Environment["LocalDevelopment"] = 1] = "LocalDevelopment";
+})(exports.Environment || (exports.Environment = {}));
+
+var HorizonAPIClientConfig = function HorizonAPIClientConfig(oAuthClientId, oAuthClientSecret, env, customLocalServerUrl) {
+  if (env === void 0) {
+    env = exports.Environment.Production;
+  }
+
+  if (customLocalServerUrl === void 0) {
+    customLocalServerUrl = '';
+  }
+
+  /**
+   * The current Bearer token used for authentication.
+   */
+  this.BearerToken = '';
+  this.OAuthClientId = 0;
+  this.OAuthClientSecret = '';
+  this.Debug = false;
+  this.LogPrefix = '[Horizon API] ';
+  this.Environment = env;
+  this.OAuthClientId = oAuthClientId;
+  this.OAuthClientSecret = oAuthClientSecret; // Set ServerUrl
+
+  switch (env) {
+    case exports.Environment.LocalDevelopment:
+      if (customLocalServerUrl) {
+        this.ServerUrl = customLocalServerUrl;
+      } else {
+        this.ServerUrl = 'http://localhost:8000/api/';
+      }
+
+      break;
+
+    default:
+      this.ServerUrl = PRODUCTION_SERVER_URL;
+      break;
+  }
+};
+
 var Product = function Product(apiProductResponse) {
   this.id = apiProductResponse.id;
   this.name = apiProductResponse.name;
@@ -875,6 +930,32 @@ var Team = function Team(apiTeamResponse) {
   if (apiTeamResponse.products) {
     apiTeamResponse.products.forEach(function (productData) {
       _this.products.push(new Product(productData));
+    });
+  }
+};
+
+/**
+ * Represents the logged-in user.
+ */
+
+var SelfUser = function SelfUser(apiUserResponse) {
+  var _this = this;
+
+  this.teams = [];
+  this.id = apiUserResponse.id;
+  this.name = apiUserResponse.name;
+  this.email = apiUserResponse.email;
+
+  if (apiUserResponse.email_verified_at) {
+    this.email_verified_at = new Date(apiUserResponse.email_verified_at);
+  }
+
+  this.created_at = new Date(apiUserResponse.created_at);
+  this.updated_at = new Date(apiUserResponse.updated_at);
+
+  if (apiUserResponse.teams) {
+    apiUserResponse.teams.forEach(function (jsonTeamData) {
+      _this.teams.push(new Team(jsonTeamData));
     });
   }
 };
@@ -1141,6 +1222,68 @@ var HorizonAPIClient = /*#__PURE__*/function () {
     }
 
     return authenticateUserWithCredentials;
+  }();
+
+  _proto.getAuthenticatedUser = /*#__PURE__*/function () {
+    var _getAuthenticatedUser = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3(withTeams) {
+      var withRelationships, response;
+      return runtime_1.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              if (withTeams === void 0) {
+                withTeams = false;
+              }
+
+              withRelationships = '';
+
+              if (withTeams) {
+                withRelationships += 'teams,';
+              }
+
+              _context3.next = 5;
+              return this.RequestService.Request(GET_SELF_USER_DATA_ROUTE, {
+                "with": withRelationships
+              });
+
+            case 5:
+              response = _context3.sent;
+
+              if (!(response === null || response.status !== HTTPStatusCode.OK)) {
+                _context3.next = 8;
+                break;
+              }
+
+              return _context3.abrupt("return", {
+                success: false
+              });
+
+            case 8:
+              _context3.t0 = SelfUser;
+              _context3.next = 11;
+              return response.json();
+
+            case 11:
+              _context3.t1 = _context3.sent;
+              _context3.t2 = new _context3.t0(_context3.t1);
+              return _context3.abrupt("return", {
+                success: true,
+                data: _context3.t2
+              });
+
+            case 14:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, this);
+    }));
+
+    function getAuthenticatedUser(_x4) {
+      return _getAuthenticatedUser.apply(this, arguments);
+    }
+
+    return getAuthenticatedUser;
   }()
   /**
    * Tries to find a team for the given ID.
@@ -1152,11 +1295,11 @@ var HorizonAPIClient = /*#__PURE__*/function () {
   _proto.getTeam =
   /*#__PURE__*/
   function () {
-    var _getTeam = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee3(id, withProducts) {
+    var _getTeam = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee4(id, withProducts) {
       var getTeamRouteCopy, withRelationships, response;
-      return runtime_1.wrap(function _callee3$(_context3) {
+      return runtime_1.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               if (withProducts === void 0) {
                 withProducts = false;
@@ -1170,45 +1313,45 @@ var HorizonAPIClient = /*#__PURE__*/function () {
                 withRelationships += 'products,';
               }
 
-              _context3.next = 7;
+              _context4.next = 7;
               return this.RequestService.Request(getTeamRouteCopy, {
                 "with": withRelationships
               });
 
             case 7:
-              response = _context3.sent;
+              response = _context4.sent;
 
               if (!(response === null || response.status !== HTTPStatusCode.OK)) {
-                _context3.next = 10;
+                _context4.next = 10;
                 break;
               }
 
-              return _context3.abrupt("return", {
+              return _context4.abrupt("return", {
                 success: false
               });
 
             case 10:
-              _context3.t0 = Team;
-              _context3.next = 13;
+              _context4.t0 = Team;
+              _context4.next = 13;
               return response.json();
 
             case 13:
-              _context3.t1 = _context3.sent;
-              _context3.t2 = new _context3.t0(_context3.t1);
-              return _context3.abrupt("return", {
+              _context4.t1 = _context4.sent;
+              _context4.t2 = new _context4.t0(_context4.t1);
+              return _context4.abrupt("return", {
                 success: true,
-                data: _context3.t2
+                data: _context4.t2
               });
 
             case 16:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3, this);
+      }, _callee4, this);
     }));
 
-    function getTeam(_x4, _x5) {
+    function getTeam(_x5, _x6) {
       return _getTeam.apply(this, arguments);
     }
 
@@ -1218,63 +1361,9 @@ var HorizonAPIClient = /*#__PURE__*/function () {
   return HorizonAPIClient;
 }();
 
-/* eslint-disable import/prefer-default-export */
-var PRODUCTION_SERVER_URL = 'https://api.horizon.vcc-online.eu/api/';
-
-/* eslint-disable import/prefer-default-export */
-
-(function (Environment) {
-  /**
-     * The API client is used in a production environment and will connect to the production
-     * services.
-     */
-  Environment[Environment["Production"] = 0] = "Production";
-  /**
-     * The API client is used in a local development environment and will only connect to the local server specified in the constructor or to the default 'https://localhost:8000/' server.
-     */
-
-  Environment[Environment["LocalDevelopment"] = 1] = "LocalDevelopment";
-})(exports.Environment || (exports.Environment = {}));
-
-var HorizonAPIClientConfig = function HorizonAPIClientConfig(oAuthClientId, oAuthClientSecret, env, customLocalServerUrl) {
-  if (env === void 0) {
-    env = exports.Environment.Production;
-  }
-
-  if (customLocalServerUrl === void 0) {
-    customLocalServerUrl = '';
-  }
-
-  /**
-   * The current Bearer token used for authentication.
-   */
-  this.BearerToken = '';
-  this.OAuthClientId = 0;
-  this.OAuthClientSecret = '';
-  this.Debug = false;
-  this.LogPrefix = '[Horizon API] ';
-  this.Environment = env;
-  this.OAuthClientId = oAuthClientId;
-  this.OAuthClientSecret = oAuthClientSecret; // Set ServerUrl
-
-  switch (env) {
-    case exports.Environment.LocalDevelopment:
-      if (customLocalServerUrl) {
-        this.ServerUrl = customLocalServerUrl;
-      } else {
-        this.ServerUrl = 'http://localhost:8000/api/';
-      }
-
-      break;
-
-    default:
-      this.ServerUrl = PRODUCTION_SERVER_URL;
-      break;
-  }
-};
-
 exports.HorizonAPIClient = HorizonAPIClient;
 exports.HorizonAPIClientConfig = HorizonAPIClientConfig;
 exports.Product = Product;
+exports.SelfUser = SelfUser;
 exports.Team = Team;
 //# sourceMappingURL=horizon-api-client.cjs.development.js.map

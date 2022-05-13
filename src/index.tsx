@@ -1,5 +1,10 @@
-export { HorizonAPIClient } from './HorizonAPIClient';
-export { HorizonAPIClientConfig } from './HorizonAPIClientConfig';
-export { Environment } from './enums/Environment';
-export * from './enums/PublicEnums';
-export * from './models/PublicModels';
+import * as React from 'react'
+import styles from './styles.module.css'
+
+interface Props {
+  text: string
+}
+
+export const ExampleComponent = ({ text }: Props) => {
+  return <div className={styles.test}>Example Component: {text}</div>
+}
